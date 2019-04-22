@@ -37,7 +37,6 @@ def start(jzzp):
 
     UpdateDats(jzzp)
 
-
 if  __name__ == "__main__":
     
     arcpy.AddMessage("32_开始进行照片值域检查")
