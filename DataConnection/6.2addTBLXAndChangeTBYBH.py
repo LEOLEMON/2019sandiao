@@ -2,7 +2,7 @@
 #encoding:utf-8
 #!python
 
-import arcpy,json,dealNone,arcpyDeal
+import arcpy,json,dealNone,arcpyDeal,pathArgs
 
 def judgeTBLX(oldTag,zzjztb):
 

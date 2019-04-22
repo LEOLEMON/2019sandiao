@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-import arcpy,arcpyDeal
+import arcpy,arcpyDeal,pathArgs
 
 class RelationClass:
 

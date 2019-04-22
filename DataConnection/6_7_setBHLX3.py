@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal
+import arcpy,json,dealNone,arcpyDeal,pathArgs
         
 def collectWJZTB(targetpath,photopath):
     """关联图斑和照片点图层,得到关联数据"""

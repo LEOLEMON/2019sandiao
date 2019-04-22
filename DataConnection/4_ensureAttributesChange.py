@@ -2,7 +2,7 @@
 #encoding:utf-8
 #!python
 
-import arcpy,json,arcpyDeal,dealNone,DCCGTBFieldsDEfined
+import arcpy,json,arcpyDeal,dealNone,DCCGTBFieldsDEfined,pathArgs
 
 def createFianllyAttributesFields(targetpath):
     """创建最终确定的地类编码，耕地种植属性代码，耕地类型，图斑细化代码"""

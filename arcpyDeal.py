@@ -56,6 +56,32 @@ def createTempDatas(searchFields,tempFields,targetpath,datas,where_clause = "",s
 
         datas.append(data)
 
+def createTempDatasLimit(searchFields,tempFields,targetpath,datas,where_clause = "",sql_clause = (None,None),offset=0,limit=100000):
+
+    checkField(targetpath,searchFields)
+
+    number = -1
+
+    for row in arcpy.da.SearchCursor(targetpath, searchFields,where_clause = where_clause,sql_clause = sql_clause):
+
+        number += 1
+
+        if number < offset:
+
+            continue 
+
+        data = {}
+
+        for i in range(len(tempFields)):
+
+            data[tempFields[i]]  = dealNone.dealNoneAndBlank(row[i]) 
+        
+        datas.append(data)
+
+        if len(datas) >= limit:
+
+            break
+
 def createTempLayer(targetpath,tempTargetPath,indexFields = [],where_clause = ""):
     """根据筛选条件创建临时图层,并创建索引"""
 

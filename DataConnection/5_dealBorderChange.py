@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal
+import arcpy,json,dealNone,arcpyDeal,pathArgs
 
 def searchLinkTBS(targetpath):
     """查找拥有LINKTBS的图斑，并返回数据列表"""

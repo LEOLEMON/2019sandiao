@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal,shapely
+import arcpy,json,dealNone,arcpyDeal,shapely,pathArgs
 from shapely.wkt import loads
 
 def searchALL(targetpath):

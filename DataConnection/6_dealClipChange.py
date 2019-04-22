@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal
+import arcpy,json,dealNone,arcpyDeal,pathArgs
 
 def searchALL(targetpath):
     """获取所有图斑中的exp_bsm,fzh和bhlx，如果图斑图层不存在fzh和bhlx，则创建字段"""
