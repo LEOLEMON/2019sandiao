@@ -2,7 +2,7 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-import arcpy,pathArgs
+import arcpy
 import sqlite3,os
 #import urllib2
 import requests

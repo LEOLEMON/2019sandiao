@@ -1,4 +1,4 @@
-import arcpy,arcpyDeal,json,dealNone,pathArgs
+import arcpy,arcpyDeal,json,dealNone
 
 def UpdateDats(jzzp):
 

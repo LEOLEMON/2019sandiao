@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-import arcpy,arcpyDeal,os,json,pathArgs
+import arcpy,arcpyDeal,os,json
 
 def getname(name,number):
 

@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal,pathArgs
+import arcpy,json,dealNone,arcpyDeal
 
 def searchLinkTBS(targetpath):
     """查找拥有LINKTBS的图斑，并返回数据列表"""
@@ -71,7 +71,7 @@ def BhlxRules(bhlx):
 
     elif bhlx == "2":
 
-        newBhlx = "0"
+        newBhlx = "2"
 
     return newBhlx
 

@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal,pathArgs
+import arcpy,json,dealNone,arcpyDeal
         
 def collectWJZTB(targetpath,photopath):
     """关联图斑和照片点图层,得到关联数据"""
@@ -17,10 +17,10 @@ def collectWJZTB(targetpath,photopath):
 
     arcpy.AddJoin_management(baseName1,"TSTYBM",baseName2,"TSTYBM")
 
-    where_clause = " exp_tblx = '一般核查图斑' and ZZJZTB = '0' and exp_tbxhdm = '' and exp_wjzlx = '' and %s.TSTYBM is null"%(baseName2)
+    where_clause = u" exp_tblx = '一般核查图斑' and ZZJZTB = '0' and exp_tbxhdm = '' and exp_wjzlx = '' and %s.TSTYBM is null"%(baseName2)
 
     datas = []
-    tempFields = ["TSTYBM","exp_sjdlbm","exp_czcsxm","exp_dlbm","exp_gdzzsxdm","exp_gdlx","SJCZCSXM"]
+    tempFields = ["TSTYBM","exp_sjdlbm","exp_czcsxm","exp_dlbm","exp_gdzzsxdm","exp_gdlx","CZCSXM"]
     searchFields =[baseName1+"."+f for f in tempFields]
 
     arcpyDeal.createTempDatas(searchFields,tempFields,baseName1,datas,where_clause=where_clause)
@@ -43,7 +43,7 @@ def check02(data):
 
     if data["exp_dlbm"][0:2] == "01" and data["exp_dlbm"] == data["exp_sjdlbm"]:
 
-        if data["exp_gdlx"] != "坡地":
+        if data["exp_gdlx"] != u"坡地":
 
             return True
 
@@ -59,7 +59,7 @@ def check03(data):
 
 def check04(data):
 
-    if data["exp_sjdlbm"] in ["0702","GY","JY"] and data["exp_dlbm"][0:2] == "20" and data["SJCZCSXM"][0:2] == "20":
+    if data["exp_sjdlbm"] in ["0702","GY","JY"] and data["exp_dlbm"][0:2] == "20" and data["CZCSXM"][0:2] == "20":
 
         return True
 

@@ -1,6 +1,62 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal,pathArgs
+import arcpy,json,dealNone,arcpyDeal
+
+def get(datas,targetValueList):
+
+    for data in datas:
+
+        if dealNone.dealNoneAndBlank(data["TSTYBM"]) != "":
+
+            targetValueList.append(data["TSTYBM"])
+
+def searchClip(indentitypath):
+    """查找规则而临时标识图层，确认哪些图斑存在几何变化"""
+
+    where_clause = " SHAPE_Area > 10"
+
+    sql_clause = (None,"ORDER BY BSM,TSTYBM DESC")
+
+    searchFields = ["BSM","TSTYBM"]
+
+    cursor = arcpy.da.SearchCursor(indentitypath, searchFields,where_clause = where_clause,sql_clause = sql_clause)
+
+    lastdata = {}
+    falsebsm = ""
+    datas = []
+    targetValueList = []
+
+    for row in cursor:
+
+        data = dict(zip(searchFields,row))
+
+        if data["BSM"] == falsebsm:
+
+            continue
+
+        else:
+
+            falsebsm = ""
+
+        if lastdata == {}:
+
+            lastdata = data
+
+        elif lastdata["BSM"] != data["BSM"]:
+
+            get(datas,targetValueList)
+
+            datas = []
+
+            lastdata = data
+
+            if dealNone.dealNoneAndBlank(data["TSTYBM"]) == "":
+
+                falsebsm == data["BSM"]
+
+        datas.append(data)
+
+    return targetValueList
 
 def searchALL(targetpath):
     """获取所有图斑中的exp_bsm,fzh和bhlx，如果图斑图层不存在fzh和bhlx，则创建字段"""
@@ -12,14 +68,17 @@ def searchALL(targetpath):
     targetValueDict = {}
 
     searchFields = ["TSTYBM","exp_bsm",'bhlx','fzh']
-    tempFields = ["TSTYBM","exp_bsm",'bhlx','fzh']
 
     arcpyDeal.ensureFields(targetpath,searchFields)
 
-    arcpyDeal.createTempDatas(searchFields,tempFields,targetpath,datas,sql_clause=sql_clause)
+    cursor = arcpy.da.SearchCursor(targetpath, searchFields,sql_clause = sql_clause)
 
-    for data in datas:
+    for row in cursor:
             
+        data = dict(zip(searchFields,row))
+
+        datas.append(data)
+
         fzh = dealNone.dealNoneAndBlank(data['fzh'])
         bhlx = dealNone.dealNoneAndBlank(data['bhlx'])
         
@@ -35,26 +94,32 @@ def searchALL(targetpath):
 
     return datas,fzhlist,targetValueDict
 
-def BhlxRules(bhlx):
+def BhlxRules(tstybm,targetValueList,bhlx):
     """当发生图形变化时，变化类型根据规则赋予新值"""
 
     newBhlx = bhlx
 
-    if bhlx == "1":
+    if tstybm in targetValueList:
 
         newBhlx = "2"
-        
-    elif bhlx == "0":
 
-        newBhlx = "0"
+    else:
 
-    elif bhlx == "":
+        if bhlx == "1":
 
-        newBhlx = "0"
+            newBhlx = "2"
+            
+        elif bhlx == "0":
 
-    elif bhlx == "2":
+            newBhlx = "0"
 
-        newBhlx = "0"
+        elif bhlx == "":
+
+            newBhlx = "0"
+
+        elif bhlx == "2":
+
+            newBhlx = "2"
 
     return newBhlx
 
@@ -107,7 +172,7 @@ def mergeFzhByFzh(fzh1,fzh2,fzhlist,mergeFzhList):
 
                 mergeFzhList[key] = newFzh
 
-def collecteFzh(targetpath,targetdatas,fzhlist,targetValueDict):
+def collecteFzh(targetpath,targetdatas,fzhlist,targetValueDict,targetValueList):
     """收集分组和变化类型"""
 
     mergeFzhList = {}
@@ -159,8 +224,8 @@ def collecteFzh(targetpath,targetdatas,fzhlist,targetValueDict):
 
                 mergeFzhByFzh(targetfzh,lastfzh,fzhlist,mergeFzhList)
 
-            targetValueDict[targettstybm]['bhlx'] = "2"
-            targetValueDict[lasttstybm]['bhlx'] = "2"
+            targetValueDict[targettstybm]['bhlx'] = BhlxRules(targettstybm,targetValueList,targetbhlx)
+            targetValueDict[lasttstybm]['bhlx'] = BhlxRules(lasttstybm,targetValueList,lastbhlx)
             targetValueDict[targettstybm]['fzh'] = targetfzh
             targetValueDict[lasttstybm]['fzh'] = lastfzh
 
@@ -199,7 +264,10 @@ def updateTarget(targetpath,fzhlist,mergeFzhList,targetValueDict):
 
             arcpy.SetProgressorPosition()
 
-def start(targetpath):
+def start(targetpath,indentitypath):
+
+    arcpy.AddMessage("6_查找几何变化")
+    targetValueList =  searchClip(indentitypath)
 
     arcpy.AddMessage("6_属性查询")
     targetdatas,fzhlist,targetValueDict = searchALL(targetpath)
@@ -208,7 +276,7 @@ def start(targetpath):
     count = len(targetdatas)
     arcpy.SetProgressor('step',"6_收集分组号",0,count,1)
 
-    mergeFzhList = collecteFzh(targetpath,targetdatas,fzhlist,targetValueDict)
+    mergeFzhList = collecteFzh(targetpath,targetdatas,fzhlist,targetValueDict,targetValueList)
     
     arcpy.AddMessage("6_数据更新")
     result = arcpy.GetCount_management(targetpath)
@@ -222,10 +290,11 @@ if __name__ == "__main__":
     arcpy.AddMessage("6_开始给切割图斑分组")
 
     targetpath = arcpy.GetParameterAsText(0)
+    indentitypath = arcpy.GetParameterAsText(1)
 
-    start(targetpath)
+    start(targetpath,indentitypath)
 
-    arcpy.SetParameterAsText(1,targetpath)
+    arcpy.SetParameterAsText(2,targetpath)
 
     arcpy.AddMessage("6_结束")
     

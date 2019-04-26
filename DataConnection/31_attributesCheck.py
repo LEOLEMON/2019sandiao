@@ -1,8 +1,8 @@
-import arcpy,arcpyDeal,json,pathArgs
+import arcpy,arcpyDeal,json
 
 def checkTBYBHAndTBWYM(data):
 
-    if data['BHLX'] == "3" or data['BHLX'] == "0":
+    if (data['BHLX'] == "3" or data['BHLX'] == "0") and data["TBLX"] not in ["不一致图斑","自主举证图斑"]:
 
         data["WYM"] = ""
         data['TBYBH'] = ""

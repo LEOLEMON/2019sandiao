@@ -2,7 +2,7 @@
 #encoding:utf-8
 #!python
 
-import arcpy,json,arcpyDeal,dealNone,DCCGTBFieldsDEfined,pathArgs
+import arcpy,json,arcpyDeal,dealNone,DCCGTBFieldsDEfined
 
 def createFianllyAttributesFields(targetpath):
     """创建最终确定的地类编码，耕地种植属性代码，耕地类型，图斑细化代码"""
@@ -205,7 +205,7 @@ def getAllNewValue(tempwjzlx,tempczcsxm,tempdlbm,tempgdzzsxmc,tempgdlx,temptbxhm
 def updateDatas(targetpath):
     """更新图层的细化代码和属性值"""
 
-    searchFields = ['DLBM',"WJZLX","CZCSXM",'exp_sjdlbm','GDLX','TBXHDM','TBXHMC','GDZZSXDM','GDZZSXMC',"DLBM_1","GDZZSXMC_1","GDLX_1","TBXHMC_1","exp_wjzlx","exp_czcsxm",'bhlx',"exp_dlbm","exp_dlmc","exp_gdzzsxdm","exp_gdzzsxmc","exp_gdlx","exp_tbxhdm","exp_tbxhmc"]
+    searchFields = ['DLBM_1',"WJZLX","CZCSXM_1",'exp_sjdlbm','GDLX','TBXHDM','TBXHMC','GDZZSXDM','GDZZSXMC',"DLBM_12","GDZZSXMC_1","GDLX_1","TBXHMC_1","exp_wjzlx","exp_czcsxm",'bhlx',"exp_dlbm","exp_dlmc","exp_gdzzsxdm","exp_gdzzsxmc","exp_gdlx","exp_tbxhdm","exp_tbxhmc"]
     tempFields = ['dlbm',"wjzlx","czcsxm",'exp_sjdlbm','gdlx','tbxhdm','tbxhmc','gdzzsxdm','gdzzsxmc',"dlbm_1","gdzzsxmc_1","gdlx_1","tbxhmc_1","exp_wjzlx","exp_czcsxm",'bhlx',"exp_dlbm","exp_dlmc","exp_gdzzsxdm","exp_gdzzsxmc","exp_gdlx","exp_tbxhdm","exp_tbxhmc"]
 
     arcpyDeal.checkField(targetpath,searchFields)

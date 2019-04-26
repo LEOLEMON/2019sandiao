@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,dealNone,arcpyDeal,pathArgs
+import arcpy,json,dealNone,arcpyDeal
 
 def getFinal2(datas,linktbs):
 
@@ -182,8 +182,8 @@ if __name__ == "__main__":
 
     targetpath = arcpy.GetParameterAsText(0)
     enviroment = arcpy.GetParameterAsText(1)
-    outname = arcpy.GetParameterAsText(2)
-    photopath = arcpy.GetParameterAsText(4)
+    outname = "output071"
+    photopath = arcpy.GetParameterAsText(3)
     
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = enviroment
@@ -192,7 +192,7 @@ if __name__ == "__main__":
 
     outpath = arcpy.Describe(outname).catalogPath
 
-    arcpy.SetParameterAsText(3,outpath)
-    arcpy.SetParameterAsText(5,photopath)
+    arcpy.SetParameterAsText(2,outpath)
+    arcpy.SetParameterAsText(4,photopath)
 
     arcpy.AddMessage("7.1_½áÊø")

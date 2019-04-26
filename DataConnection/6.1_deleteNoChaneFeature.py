@@ -2,7 +2,7 @@
 #encoding:utf-8
 #!python
 
-import arcpy,json,dealNone,arcpyDeal,pathArgs
+import arcpy,json,dealNone,arcpyDeal
 
 def start(targetpath,outname):
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     targetpath = arcpy.GetParameterAsText(0)
     enviroment = arcpy.GetParameterAsText(1)
-    outname = arcpy.GetParameterAsText(2)
+    outname = "output061"
 
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = enviroment
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     outpath = arcpy.Describe(outname).catalogPath
 
-    arcpy.SetParameterAsText(3,outpath)
+    arcpy.SetParameterAsText(2,outpath)
 
     arcpy.AddMessage("6.1_½áÊø")
     
