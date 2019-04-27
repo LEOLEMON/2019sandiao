@@ -1,6 +1,9 @@
 #-*- coding:utf-8 -*-
 #encoding:utf-8
-import arcpy,json,arcpyDeal
+import arcpy,sys
+for p in sys.path:
+    arcpy.AddMessage(p)
+import json,arcpyDeal
 
 def ensureSHFields(targetpath):
 
