@@ -5,7 +5,7 @@ import arcpy,json,arcpyDeal
 def getCskArea(cskpath):
     """计算初始库面积"""
 
-    arcpyDeal.ensureFields(cskpath,["cskmianji"],type = "Double")
+    arcpyDeal.ensureFields(cskpath,["cskmianji"],type = "DOUBLE")
 
     cskcur = arcpy.da.UpdateCursor(cskpath,['cskmianji','SHAPE@AREA'])
 
@@ -67,7 +67,7 @@ def collectError(indentitypath):
 
         elif lasttstybm["tstybm"]  == data["TSTYBM"]:
 
-            arcpy.AddMessage("%s,%s,%s,%s"%(data["TSTYBM"],data["BSM"],lasttstybm["cskbsm"],str(data["BSM"] not in lasttstybm["cskbsm"])))
+            # arcpy.AddMessage("%s,%s,%s,%s"%(data["TSTYBM"],data["BSM"],lasttstybm["cskbsm"],str(data["BSM"] not in lasttstybm["cskbsm"])))
 
             if data["BSM"] not in lasttstybm["cskbsm"]:
 
@@ -184,6 +184,8 @@ def UpdateTarget(xzkpath,datas):
 
     arcpyDeal.ensureFields(xzkpath,fields)
 
+    fields.append("SHAPE@AREA")
+
     cursor = arcpy.da.UpdateCursor(xzkpath,fields,where_clause=" TSTYBM is not null",sql_clause=(None, 'ORDER BY TSTYBM'))
 
     for row in cursor:
@@ -196,7 +198,12 @@ def UpdateTarget(xzkpath,datas):
 
             tstybmDifference.append(tstybm)
 
+            row[1] = row[5]
+            row[2] = row[6]
+            row[3] = row[7]
+            row[4] = row[8]
 
+            cursor.updateRow(row)
 
             continue
 
@@ -215,7 +222,7 @@ def UpdateTarget(xzkpath,datas):
         row[1] = datas[tstybm]["cskbsm"]
         row[2] = datas[tstybm]["cskzldwdm"]
         row[3] = datas[tstybm]["cskdlbm"]
-        row[3] = datas[tstybm]["cskmianji"]
+        row[4] = datas[tstybm]["cskmianji"]
 
         cursor.updateRow(row)
 

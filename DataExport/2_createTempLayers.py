@@ -14,9 +14,9 @@ if __name__ == "__main__":
     arcpy.env.workspace = enviroment
     arcpy.env.overwriteOutput = True
 
-    tempxzkpath = "BYZTB_2"
-    tempPhotoPath = "TP_2"
-    tempcskpath = "BDTP_2"
+    tempxzkpath = "outputxzkpath_2"
+    tempPhotoPath = "outputtppath_2"
+    tempcskpath = "outputcskpath_2"
 
     keepTargetFields = ["TSTYBM","BSM","ZLDWDM","JZSJ",'DLBM',"WJZLX","CZCSXM",'GDLX','TBXHDM','TBXHMC','GDZZSXDM','GDZZSXMC','LINKTBS','SJDLBM']
     keepBDTBFields = ["ZLDWDM","BSM","DLBM","CZCSXM"]

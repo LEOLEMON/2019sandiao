@@ -40,7 +40,7 @@ def deleteFields(targetpath,delfieldslist):
 
         arcpy.DeleteField_management(targetpath,deleteList)
 
-def ensureFields(targetpath,newfieldslist):
+def ensureFields(targetpath,newfieldslist,type = "Text"):
     """确认字段是否存在，不存在创建新字段"""
 
     fieldslist = [field.name for field in arcpy.ListFields(targetpath)]
@@ -51,7 +51,7 @@ def ensureFields(targetpath,newfieldslist):
 
             arcpy.AddMessage("创建  "+field)
 
-            arcpy.AddField_management(targetpath, field, "TEXT")
+            arcpy.AddField_management(targetpath, field, type)
 
 def checkField(targetpath,fieldslist):
 

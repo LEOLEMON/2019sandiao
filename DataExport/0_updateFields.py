@@ -5,7 +5,7 @@ import arcpy,arcpyDeal,dealNone
 def dealNull(xzkPath,cskPath):
     """«Â¿Ìø’÷µ"""
 
-    searchFields = ['bsm','dlbm','gdlx','tbxhdm','gdzzsxdm','czcsxm']
+    searchFields = ['bsm','dlbm','gdlx','tbxhdm','gdzzsxdm','czcsxm','wjzlx','LINKTBS']
 
     xzkcur = arcpy.da.UpdateCursor(xzkPath,searchFields)
 

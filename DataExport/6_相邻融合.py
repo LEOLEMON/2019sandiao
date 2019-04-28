@@ -29,12 +29,12 @@ arcpy.SelectLayerByAttribute_management(xzkPath,'CLEAR_SELECTION')
 
 arcpy.Dissolve_management(xzkPath,tarPath,'dlbm;zldwdm;gdlx;tbxhdm;gdzzsxdm;xzkfzh','','SINGLE_PART','UNSPLIT_LINES')
 
-#å¯¹èåˆçš„å¤§å›¾æ–‘åå‘æŒ‚æ¥åŸç¢å›¾æ–‘ä¿¡æ¯
+#¶ÔÈÚºÏµÄ´óÍ¼°ß·´Ïò¹Ò½ÓÔ­ËéÍ¼°ßĞÅÏ¢
 
 arcpy.SpatialJoin_analysis(target_features=tarPath, join_features=xzkPath, out_feature_class=disPath, join_operation="JOIN_ONE_TO_ONE", join_type="KEEP_COMMON", field_mapping="""TSTYBM "TSTYBM" true true false 1024 Text 0 0 ,Join,",",{0},TSTYBM,-1,-1;shpvary "shpvary" true true false 100 Text 0 0 ,Join,#,{1},shpvary,-1,-1""".format(xzkPath,xzkPath), match_option="CONTAINS", search_radius="", distance_field_name="")
 
 
-arcpy.AddMessage('èåˆå®Œæˆ')
+arcpy.AddMessage('ÈÚºÏÍê³É')
     
     
 
