@@ -49,7 +49,7 @@ def ensureFields(targetpath,newfieldslist,type = "Text"):
 
         if field not in fieldslist:
 
-            arcpy.AddMessage("创建  "+field)
+            arcpy.AddMessage("创建 %s,类型为：%s"%(field,type))
 
             arcpy.AddField_management(targetpath, field, type)
 
@@ -61,7 +61,14 @@ def checkField(targetpath,fieldslist):
 
         if f not in list and "SHAPE@" not in f:
 
-            arcpy.AddMessage("createTempDatas : not exists "+f)
+            arcpy.AddMessage(targetpath+" : not exists "+f)
+
+def printFields(targetpath):
+    "输出所有字段名"
+    
+    fieldslist = [field.name for field in arcpy.ListFields(targetpath)]
+
+    arcpy.AddMessage(json.dumps(fieldslist))
 
 def createTempDatas(searchFields,tempFields,targetpath,datas,where_clause = "",sql_clause = (None,None)):
     """根据输入字段和条件SQL筛选数据，并把每条记录构建成dict格式"""
@@ -139,7 +146,7 @@ def createExistsTempLayer(targetpath,outputPath,indexFields = [],where_clause = 
 
     deleteNotInFields(outputPath,keepFields)
 
-def copyToTempLayer(env,targetpath,outputPath,keepFields):
+def copyToTempLayer(env,targetpath,outputPath,keepFields,addFields=[],addFieldsType = "Text"):
     """把旧图层得某些字段输出为新图层"""
 
     dtargetpath = arcpy.Describe(targetpath)
@@ -151,6 +158,7 @@ def copyToTempLayer(env,targetpath,outputPath,keepFields):
     arcpy.CreateFeatureclass_management(env,outputPath, shapeType,"","","",SpatialReference)
 
     ensureFields(outputPath,keepFields)
+    ensureFields(outputPath,addFields,addFieldsType)
 
     keepFields.append("SHAPE@")
 

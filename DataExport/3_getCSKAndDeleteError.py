@@ -180,6 +180,8 @@ def UpdateTarget(xzkpath,datas):
     sjdlbmDifference = []
     tstybmDifference = []
 
+    arcpyDeal.ensureFields(xzkpath,["cskmianji"],type="DOUBLE")
+
     fields = ["TSTYBM","cskbsm","cskzldwdm","cskdlbm","cskmianji","BSM","ZLDWDM","SJDLBM"]
 
     arcpyDeal.ensureFields(xzkpath,fields)

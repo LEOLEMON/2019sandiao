@@ -63,6 +63,13 @@ def checkField(targetpath,fieldslist):
 
             arcpy.AddMessage("createTempDatas : not exists "+f)
 
+def printFields(targetpath):
+    "输出所有字段名"
+    
+    fieldslist = [field.name for field in arcpy.ListFields(targetpath)]
+
+    arcpy.AddMessage(json.dumps(fieldslist))
+
 def createTempDatas(searchFields,tempFields,targetpath,datas,where_clause = "",sql_clause = (None,None)):
     """根据输入字段和条件SQL筛选数据，并把每条记录构建成dict格式"""
 

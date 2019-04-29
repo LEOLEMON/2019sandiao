@@ -22,7 +22,7 @@ if __name__ == "__main__":
     keepBDTBFields = ["ZLDWDM","BSM","DLBM","CZCSXM"]
 
     arcpy.AddMessage("2_ÏÖ×´¿â")
-    arcpyDeal.copyToTempLayer(enviroment,xzkpath,tempxzkpath,keepFields=keepTargetFields)
+    arcpyDeal.copyToTempLayer(enviroment,xzkpath,tempxzkpath,keepFields=keepTargetFields,addFields=["width"],addFieldsType="DOUBLE")
 
     arcpy.AddMessage("2_³õÊ¼¿â")
     arcpyDeal.copyToTempLayer(enviroment,cskpath,tempcskpath,keepFields=keepBDTBFields)

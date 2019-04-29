@@ -5,7 +5,7 @@ import arcpy,arcpyDeal,dealNone
 def dealNull(xzkPath,cskPath):
     """清理空值"""
 
-    searchFields = ['bsm','dlbm','gdlx','tbxhdm','gdzzsxdm','czcsxm','wjzlx','LINKTBS']
+    searchFields = ['bsm','dlbm','dlmc','gdlx','tbxhdm','tbxhmc','gdzzsxdm','gdzzsxmc','czcsxm','wjzlx','LINKTBS']
 
     xzkcur = arcpy.da.UpdateCursor(xzkPath,searchFields)
 
@@ -14,9 +14,15 @@ def dealNull(xzkPath,cskPath):
         arcpy.SetProgressorPosition()
         
         for i in range(len(searchFields)):
+            
+            if  row[i] != None and row[i] in (u"0",u"无"):
 
-            row[i] = dealNone.dealNoneAndBlank(row[i])
-        
+                row[i] = ""
+
+            else:
+
+                row[i] = dealNone.dealNoneAndBlank(row[i])
+
         xzkcur.updateRow(row)
 
     searchFields = ['bsm','dlbm','czcsxm']
