@@ -4,6 +4,8 @@ import arcpy,arcpyDeal
 def dissolve(xzkpath,dissolvepath,outputxzkpath):
     """融合相同属性，bsm一致的图斑,保证只有属性变化的图斑与周边图斑不在同一个分组号内"""
 
+    arcpy.RepairGeometry_management (xzkpath, "KEEP_NULL")
+
     arcpy.CheckGeometry_management(xzkpath,"dissolvepath_7_CheckGeometry")
 
     searchFields = ['cskbsm','dlbm','zldwdm','gdlx','tbxhdm','gdzzsxdm']

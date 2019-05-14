@@ -14,12 +14,12 @@ if __name__ == "__main__":
     arcpy.env.workspace = enviroment
     arcpy.env.overwriteOutput = True
 
+    tempcskpath = "outputcskpath_2"
     tempxzkpath = "outputxzkpath_2"
     tempPhotoPath = "outputtppath_2"
-    tempcskpath = "outputcskpath_2"
 
-    keepTargetFields = ["TSTYBM","BSM","ZLDWDM","JZSJ",'DLBM',"WJZLX","CZCSXM",'GDLX','TBXHDM','TBXHMC','GDZZSXDM','GDZZSXMC','LINKTBS','SJDLBM']
-    keepBDTBFields = ["ZLDWDM","BSM","DLBM","CZCSXM"]
+    keepTargetFields = ['TSTYBM','BSM','ZLDWDM','JZSJ','DLBM','WJZLX','CZCSXM','GDLX','TBXHDM','TBXHMC','GDZZSXDM','GDZZSXMC','LINKTBS','SJDLBM','OLDTAG','ZZJZTB']
+    keepBDTBFields = ['ZLDWDM','BSM','DLBM','CZCSXM']
 
     arcpy.AddMessage("2_ÏÖ×´¿â")
     arcpyDeal.copyToTempLayer(enviroment,xzkpath,tempxzkpath,keepFields=keepTargetFields,addFields=["width"],addFieldsType="DOUBLE")
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     arcpyDeal.copyToTempLayer(enviroment,cskpath,tempcskpath,keepFields=keepBDTBFields)
 
     arcpy.AddMessage("2_ÕÕÆ¬µã")
-    # arcpyDeal.createExistsTempLayer(photopath,tempPhotoPath)
+    arcpyDeal.createExistsTempLayer(photopath,tempPhotoPath)
 
     arcpy.SetParameterAsText(4,tempxzkpath)
     arcpy.SetParameterAsText(5,tempcskpath)

@@ -29,7 +29,7 @@ def createWidth(tempname):
 
 def collectError(indentitypath):
 
-    where_clause = "SHAPE_Area >10 and width > 1 and TSTYBM is not null and TSTYBM <> ''"
+    where_clause = "SHAPE_Area >0.5 and width > 0.1 and TSTYBM is not null and TSTYBM <> ''"
 
     sql_clause = (None,"ORDER BY TSTYBM,BSM DESC")
 
@@ -140,13 +140,11 @@ def judgeError(xzkpath,indentitypath,errorpath):
         createWidth(indentitypath)
 
         arcpy.AddMessage("3_收集错误图斑")
-        count = int(arcpy.GetCount_management(indentitypath).getOutput(0))
-        arcpy.SetProgressor('step','3_收集错误图斑',0,count,1)
+        arcpy.SetProgressor('step','3_收集错误图斑',0,int(arcpy.GetCount_management(indentitypath).getOutput(0)),1)
         targetValueList = collectError(indentitypath)
 
         arcpy.AddMessage("3_标记错误图斑")
-        count = int(arcpy.GetCount_management(xzkpath).getOutput(0))
-        arcpy.SetProgressor('step','3_标记错误图斑',0,count,1)
+        arcpy.SetProgressor('step','3_标记错误图斑',0,int(arcpy.GetCount_management(xzkpath).getOutput(0)),1)
         markError(xzkpath,targetValueList)
 
         arcpy.AddMessage("3_输出并删除错误图斑")
@@ -155,8 +153,8 @@ def judgeError(xzkpath,indentitypath,errorpath):
 def collectCskData(indentitypath):
     """收集现状库图斑数据"""
 
-    fields = ["TSTYBM","BSM","ZLDWDM","DLBM","BSM_1","ZLDWDM_1","SJDLBM","cskmianji"]
-    showFields = ["tstybm","cskbsm","cskzldwdm","cskdlbm","xzkbsm","xzkzldwdm","xzksjdlbm","cskmianji"]
+    fields = ["TSTYBM","BSM","ZLDWDM","DLBM","CZCSXM","BSM_1","ZLDWDM_1","SJDLBM","CZCSXM_1","cskmianji","SHAPE_AREA"]
+    showFields = ["tstybm","cskbsm","cskzldwdm","cskdlbm","cskczcsxm","xzkbsm","xzkzldwdm","xzksjdlbm","xzkczcsxm","cskmianji","SHAPE_AREA"]
 
     where_clause="TSTYBM is not null and TSTYBM <> ''"
 
@@ -168,7 +166,15 @@ def collectCskData(indentitypath):
 
             data = dict(zip(showFields,row))
 
-            datas[data["tstybm"]] = data
+            if data["tstybm"] in datas:
+
+                if data["SHAPE_AREA"] >datas[data["tstybm"]]["SHAPE_AREA"]:
+
+                    datas[data["tstybm"]] = data
+                
+            else:
+
+                datas[data["tstybm"]] = data
 
     return datas
 
@@ -178,11 +184,12 @@ def UpdateTarget(xzkpath,datas):
     bsmDifference = []
     zldwdmDifference = []
     sjdlbmDifference = []
+    czcsxmDifference = []
     tstybmDifference = []
 
     arcpyDeal.ensureFields(xzkpath,["cskmianji"],type="DOUBLE")
 
-    fields = ["TSTYBM","cskbsm","cskzldwdm","cskdlbm","cskmianji","BSM","ZLDWDM","SJDLBM"]
+    fields = ["TSTYBM","cskbsm","cskzldwdm","cskdlbm","cskczcsxm","cskmianji","BSM","ZLDWDM","SJDLBM","CZCSXM"]
 
     arcpyDeal.ensureFields(xzkpath,fields)
 
@@ -200,10 +207,11 @@ def UpdateTarget(xzkpath,datas):
 
             tstybmDifference.append(tstybm)
 
-            row[1] = row[5]
-            row[2] = row[6]
-            row[3] = row[7]
-            row[4] = row[8]
+            row[1] = row[6]
+            row[2] = row[7]
+            row[3] = row[8]
+            row[4] = row[9]
+            row[5] = row[10]
 
             cursor.updateRow(row)
 
@@ -220,11 +228,17 @@ def UpdateTarget(xzkpath,datas):
         if datas[tstybm]["cskdlbm"] != datas[tstybm]["xzksjdlbm"]:
 
             sjdlbmDifference.append(tstybm)
+            zldwdmDifference.append(tstybm)
+
+        if datas[tstybm]["cskczcsxm"] != datas[tstybm]["xzkczcsxm"]:
+
+            czcsxmDifference.append(tstybm)
 
         row[1] = datas[tstybm]["cskbsm"]
         row[2] = datas[tstybm]["cskzldwdm"]
         row[3] = datas[tstybm]["cskdlbm"]
-        row[4] = datas[tstybm]["cskmianji"]
+        row[4] = datas[tstybm]["cskczcsxm"]
+        row[5] = datas[tstybm]["cskmianji"]
 
         cursor.updateRow(row)
 
@@ -232,11 +246,12 @@ def UpdateTarget(xzkpath,datas):
     arcpy.AddMessage("3_共有%s个图斑bsm不同"%(len(bsmDifference)))
     arcpy.AddMessage("3_共有%s个图斑zldwdm不同"%(len(zldwdmDifference)))
     arcpy.AddMessage("3_共有%s个图斑sjdlbm不同"%(len(sjdlbmDifference)))
+    arcpy.AddMessage("3_共有%s个图斑czcsxm不同"%(len(czcsxmDifference)))
 
-    arcpy.AddMessage("3_"+json.dumps(tstybmDifference))
-    arcpy.AddMessage("3_"+json.dumps(bsmDifference))
-    arcpy.AddMessage("3_"+json.dumps(zldwdmDifference))
-    arcpy.AddMessage("3_"+json.dumps(sjdlbmDifference))
+    # arcpy.AddMessage("3_"+json.dumps(tstybmDifference))
+    # arcpy.AddMessage("3_"+json.dumps(bsmDifference))
+    # arcpy.AddMessage("3_"+json.dumps(zldwdmDifference))
+    # arcpy.AddMessage("3_"+json.dumps(sjdlbmDifference))
 
 if __name__ == "__main__":
     
@@ -265,14 +280,12 @@ if __name__ == "__main__":
 
     #收集
     arcpy.AddMessage("3_收集现状库图斑数据")
-    count = int(arcpy.GetCount_management(indentitypath).getOutput(0))
-    arcpy.SetProgressor('step','3_收集现状库图斑数据',0,count,1)
+    arcpy.SetProgressor('step','3_收集现状库图斑数据',0,int(arcpy.GetCount_management(indentitypath).getOutput(0)),1)
     matchedDataDict = collectCskData(indentitypath)
     
     #还原数据
     arcpy.AddMessage("3_还原数据")
-    count = int(arcpy.GetCount_management(xzkpath).getOutput(0))
-    arcpy.SetProgressor('step','3_还原数据',0,count,1)
+    arcpy.SetProgressor('step','3_还原数据',0, int(arcpy.GetCount_management(xzkpath).getOutput(0)),1)
     UpdateTarget(xzkpath,matchedDataDict)
 
     arcpy.SetParameterAsText(3,xzkpath)

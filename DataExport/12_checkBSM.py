@@ -5,6 +5,10 @@ import arcpy,arcpyDeal,json
 def calculteBSM(xzkpath,xzkdissolvepath):
     """计算BSM数量是否缺失"""
 
+    count = int(arcpy.GetCount_management(xzkpath).getOutput(0)) + int(arcpy.GetCount_management(xzkdissolvepath).getOutput(0))
+
+    arcpy.SetProgressor('step','12_丢失BSM',0,count,1)
+
     searchFields = ["cskbsm"]
 
     originLackBSMList = []
@@ -18,6 +22,8 @@ def calculteBSM(xzkpath,xzkdissolvepath):
 
                 outputBSMList.append(row[0])
 
+            arcpy.SetProgressorPosition()
+
     arcpy.AddMessage("现在融合图层有%s个BSM"%(len(outputBSMList)))
 
     with arcpy.da.SearchCursor(xzkpath,searchFields) as cursor:
@@ -27,6 +33,8 @@ def calculteBSM(xzkpath,xzkdissolvepath):
             if row[0] not in outputBSMList and row[0] not in originLackBSMList:
 
                 originLackBSMList.append(row[0])
+                
+            arcpy.SetProgressorPosition()
 
     arcpy.AddMessage("有%s个BSM缺失"%(len(originLackBSMList)))
     arcpy.AddMessage(originLackBSMList)
@@ -82,7 +90,9 @@ def traverseLayer(lackbsm,xzkdissolvepath,table,bsmlist=[]):
 def takeBsmBack(xzkdissolvepath,originLackBSMList):
     """把缺失的BSM找回来"""
 
-    table = "xzkdissolvepath"
+    arcpy.SetProgressor('step','12_把缺失的BSM找回来',0,len(originLackBSMList),1)
+
+    table = "xzkdissolvepath_12"
 
     arcpy.MakeFeatureLayer_management ( xzkdissolvepath, table)
 
@@ -94,19 +104,21 @@ def takeBsmBack(xzkdissolvepath,originLackBSMList):
 
         traverseLayer(bsm,xzkdissolvepath,table,[])
 
+        arcpy.SetProgressorPosition()
+
 if __name__ == "__main__":
-    """融合前后BSM总数一定要对的上"""
+    """融合分组前后BSM总数一定要对的上"""
     
-    arcpy.AddMessage("11_开始更新范围")
+    arcpy.AddMessage("12_开始检查BSM")
     
     xzkpath = arcpy.GetParameterAsText(0)
     xzkdissolvepath = arcpy.GetParameterAsText(1)
 
-    arcpy.AddMessage("11_计算BSM")
+    arcpy.AddMessage("12_计算BSM")
     originLackBSMList = calculteBSM(xzkpath,xzkdissolvepath)
 
-    arcpy.AddMessage("11_还原BSM")
+    arcpy.AddMessage("12_还原BSM")
     takeBsmBack(xzkdissolvepath,originLackBSMList)
         
     arcpy.SetParameterAsText(2,xzkdissolvepath)
-    arcpy.AddMessage("11_结束更新范围")
+    arcpy.AddMessage("12_结束检查BSM")

@@ -35,7 +35,7 @@ def compary(lastbsm,list):
                 ratio1 = intersection.area/shpi.area
                 ratio2 = intersection.area/shpk.area
                 
-                # arcpy.AddMessage("%s,%s,%s,%s,%s,%s"%(list[i]['TSTYBM'],i,k,str(ratio1 > 0.1),str(ratio2 > 0.1),intersection.area > 10))
+                # arcpy.AddMessage("%s,%s,%s,%s,%s,%s,%s,%s"%(list[i]['TSTYBM'],i,k,str(ratio1 > 0.1),str(ratio2 > 0.1),intersection.area > 10,list[i]["SHAPE_AREA"],list[k]["SHAPE_AREA"]))
                 
                 #由于数据事先已按照时间倒序，所以排在最前面的数据如果与后面的数据重叠，则把前面的数据保留，后面的删除
                 if ratio1 > 0.1 or ratio2 > 0.1 or intersection.area > 10:
@@ -51,14 +51,15 @@ def compary(lastbsm,list):
 def collectRepetitive(xzkpath):
     """收集需要删除的图斑"""
 
-    searchFields = ["TSTYBM","cskbsm","repetitive","JZSJ"]
+    searchFields = ["TSTYBM","cskbsm","repetitive"]
 
-    sql_clause = (None," ORDER BY cskbsm,JZSJ DESC")
+    sql_clause = (None," ORDER BY cskbsm,SHAPE_AREA DESC")
 
     arcpyDeal.deleteFields(xzkpath,["repetitive"])
     arcpyDeal.ensureFields(xzkpath,searchFields)
 
     searchFields.append("SHAPE@WKT")
+    searchFields.append("SHAPE_AREA")
 
     targetValueDict = {}
 
@@ -144,10 +145,10 @@ if __name__ == "__main__":
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = enviroment
 
-    repetitivepath = "repetitive_3"
+    repetitivepath = "repetitive_4"
 
-    arcpy.AddMessage("4_收集需要删除的图斑")
     count = int(arcpy.GetCount_management(xzkpath).getOutput(0))
+    arcpy.AddMessage("4_收集需要删除的图斑")
     arcpy.SetProgressor('step',"4_收集保留和需要删除的图斑",0,count,1)
     targetValueDict = collectRepetitive(xzkpath)
 

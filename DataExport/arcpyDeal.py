@@ -157,7 +157,20 @@ def copyToTempLayer(env,targetpath,outputPath,keepFields,addFields=[],addFieldsT
 
     arcpy.CreateFeatureclass_management(env,outputPath, shapeType,"","","",SpatialReference)
 
-    ensureFields(outputPath,keepFields)
+    for field in arcpy.ListFields(targetpath):
+    
+        aliasName = field.aliasName
+        baseName = field.baseName
+        length = field.length
+        type = field.type
+        
+        if baseName not in keepFields:
+        
+            continue
+        
+        arcpy.AddField_management(outputPath,baseName,type,field_length=length,field_alias=aliasName)
+        arcpy.AddMessage("创建 %s,类型为：%s，长度为:%s"%(baseName.encode('gbk'),type.encode('gbk'),length))
+
     ensureFields(outputPath,addFields,addFieldsType)
 
     keepFields.append("SHAPE@")
